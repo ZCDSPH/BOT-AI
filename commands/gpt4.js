@@ -1,8 +1,8 @@
 const axios = require('axios');
 module.exports = {
-  name: 'gpt4',
+  name: 'ai',
   description: 'Ask a question to GPT-4',
-  author: 'Deku (rest api)',
+  author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
   async execute(senderId, args, pageAccessToken, sendMessage) {
     const prompt = args.join( );
     try {
@@ -10,7 +10,6 @@ module.exports = {
       const response = await axios.get(apiUrl);
       const text = response.data.gpt4;
 
-      // Split the response into chunks if it exceeds 2000 characters
       const maxMessageLength = 2000;
       if (text.length > maxMessageLength) {
         const messages = splitMessageIntoChunks(text, maxMessageLength);
