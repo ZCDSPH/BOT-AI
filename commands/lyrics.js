@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = {
   name: 'lyrics',
   description: 'Fetch song lyrics',
-  author: 'Deku (rest api)',
+  author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
   async execute(senderId, args, pageAccessToken, sendMessage) {
     const query = args.join(' ');
     try {
