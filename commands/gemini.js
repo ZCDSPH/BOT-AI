@@ -2,14 +2,13 @@ const { callGeminiAPI } = require('../utils/callGeminiAPI');
 module.exports = {
   name: 'gemini',
   description: 'Ask a question to the Gemini AI',
-  author: 'ChatGPT',
+  author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
   async execute(senderId, args, pageAccessToken, sendMessage) {
-    const prompt = args.join(' ');
+    const prompt = args.join(' ');  
+    
     try {
       sendMessage(senderId, { text: '💬 | 𝙰𝚗𝚜𝚠𝚎𝚛𝚒𝚗𝚐...' }, pageAccessToken);
       const response = await callGeminiAPI(prompt);
-
-      // Split the response into chunks if it exceeds 2000 characters
       const maxMessageLength = 2000;
       if (response.length > maxMessageLength) {
         const messages = splitMessageIntoChunks(response, maxMessageLength);
