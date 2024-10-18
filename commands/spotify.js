@@ -3,7 +3,7 @@ const axios = require('axios');
 module.exports = {
   name: 'spotify',
   description: 'Get a Spotify link for a song',
-  author: 'Deku (rest api)',
+  author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
   async execute(senderId, args, pageAccessToken, sendMessage) {
     const query = args.join(' ');
 
@@ -11,11 +11,10 @@ module.exports = {
       const apiUrl = `https://deku-rest-apis.ooguy.com/spotify?q=${encodeURIComponent(query)}`;
       const response = await axios.get(apiUrl);
 
-      // Extract the Spotify link from the response
       const spotifyLink = response.data.result;
 
       if (spotifyLink) {
-        // Send the MP3 file as an attachment
+      
         sendMessage(senderId, {
           attachment: {
             type: 'audio',
