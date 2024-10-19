@@ -26,7 +26,7 @@ module.exports = {
           }
         };
 
-        await sendMessage(senderId, videoMessage, pageAccessToken);
+        sendMessage(senderId, videoMessage, pageAccessToken);
       } else {
         sendError(senderId, 'Error: Unable to fetch video.', pageAccessToken);
       }
