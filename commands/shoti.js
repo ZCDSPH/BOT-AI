@@ -6,7 +6,7 @@ const token = fs.readFileSync('token.txt', 'utf8');
 
 module.exports = {
   name: 'shoti',
-  description: 'Fetch a TikTok video and send the details and video',
+  description: 'Fetch a TikTok video and send only the video',
   usage: '-shawty',
   author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
 
@@ -19,25 +19,20 @@ module.exports = {
       const { data } = await axios.get(apiUrl);
 
       if (data.status && data.videoDownloadLink) {
-        const { title = 'No Title', videoDownloadLink } = data;
-        const detailsMessage = { text: `Title: ${title}` };
         const videoMessage = {
           attachment: {
             type: 'video',
-            payload: { url: videoDownloadLink }
+            payload: { url: data.videoDownloadLink }
           }
         };
 
-        await Promise.all([
-          sendMessage(senderId, detailsMessage, pageAccessToken),
-          sendMessage(senderId, videoMessage, pageAccessToken)
-        ]);
+        await sendMessage(senderId, videoMessage, pageAccessToken);
       } else {
-        sendError(senderId, 'Error: Unable to fetch video details.', pageAccessToken);
+        sendError(senderId, 'Error: Unable to fetch video.', pageAccessToken);
       }
     } catch (error) {
       console.error('Error fetching video:', error);
-      sendError(senderId, 'Error: Unexpected error occurred while fetching the video.', pageAccessToken);
+      sendError(senderId, 'Error: Unexpected error occurred.', pageAccessToken);
     }
   },
 };
