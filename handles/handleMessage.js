@@ -4,7 +4,7 @@ const { sendMessage } = require("./sendMessage");
 const axios = require("axios");
 
 const commands = new Map();
-const prefix = "-";
+const prefix = "";
 
 const commandFiles = fs
   .readdirSync(path.join(__dirname, "../commands"))
