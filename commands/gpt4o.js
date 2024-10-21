@@ -2,7 +2,7 @@ const axios = require('axios');
 
 module.exports = {
   name: 'toshia',
-  description: 'Generate text using GPT-4o API',
+  description: 'Generate text using toshia datasets',
   author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
   async execute(senderId, args, pageAccessToken, sendMessage) {
     const prompt = args.join(' ');
