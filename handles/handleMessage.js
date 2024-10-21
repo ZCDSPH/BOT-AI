@@ -42,24 +42,21 @@ async function handleMessage(event, pageAccessToken) {
         await command.execute(senderId, args, pageAccessToken, sendMessage);
       } catch (error) {
         console.error(`Error executing command ${commandName}:`, error);
-        if (error.message) {
-          sendMessage(senderId, { text: error.message }, pageAccessToken);
-        } else {
-          sendMessage(
-            senderId,
-            { text: "There was an error executing that command." },
-            pageAccessToken,
-          );
-        }
+        const errorMsg = error.message ? error.message : "There was an error executing that command.";
+        sendMessage(senderId, { text: errorMsg }, pageAccessToken);
       }
-      return;
     } else {
-      const id = senderId;
-      const userMessage = args;
-      const { data } = await axios.get(
-        "https://joshweb.click/gpt4?prompt=" + userMessage + "&uid=" + id,
-      );
-      return sendMessage(id, { text: data.gpt4 }, pageAccessToken);
+      try {
+        // Prepare the user message for API, fallback for short messages
+        const userMessage = args.join(" ") || commandName;  // Handles even single-word questions
+        const { data } = await axios.get(
+          `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
+        );
+        await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
+      } catch (error) {
+        console.error("Error fetching GPT response:", error);
+        sendMessage(senderId, { text: "I'm having trouble answering that right now." }, pageAccessToken);
+      }
     }
   } else if (event.message) {
     console.log("Received message without text");
