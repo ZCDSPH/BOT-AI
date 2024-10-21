@@ -47,8 +47,8 @@ async function handleMessage(event, pageAccessToken) {
       }
     } else {
       try {
-        // Prepare the user message for API, fallback for short messages
-        const userMessage = args.join(" ") || commandName;  // Handles even single-word questions
+        
+        const userMessage = args.join(" ") || commandName;  
         const { data } = await axios.get(
           `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
         );
