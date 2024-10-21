@@ -11,7 +11,7 @@ module.exports = {
 
     const commands = commandFiles.map(file => {
       const command = require(path.join(commandsDir, file));
-      return `➤ ${command.name}\n  - ${command.description}\n  - Credits: 𝙼𝚊𝚛𝚓𝚑𝚞𝚗 𝙱𝚊𝚢𝚕𝚘𝚗`;
+      return `➤《 ${command.name} 》\n  - ${command.description}\n  - Credits: 𝙼𝚊𝚛𝚓𝚑𝚞𝚗 𝙱𝚊𝚢𝚕𝚘𝚗`;
     });
 
     const totalCommands = commandFiles.length;
@@ -21,7 +21,7 @@ module.exports = {
     const end = start + pageSize;
     const paginatedCommands = commands.slice(start, end);
     
-    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒: \nTotal Commands: ${totalCommands} \n\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${Math.ceil(totalCommands / pageSize)}\n\n𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁 : 𝙼𝙰𝚁𝙹𝙷𝚄𝙽 𝙱𝙰𝚈𝙻𝙾𝙽`;
+    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒:\nTotal Commands: ${totalCommands}\n\n━━━━━━━━━━━━━━━━━\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${Math.ceil(totalCommands / pageSize)}\n\n𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁 : 𝙼𝙰𝚁𝙹𝙷𝚄𝙽 𝙱𝙰𝚈𝙻𝙾𝙽`;
     
     sendMessage(senderId, { text: helpMessage }, pageAccessToken);
   }
