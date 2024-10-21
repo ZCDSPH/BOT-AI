@@ -21,7 +21,7 @@ module.exports = {
     const end = start + pageSize;
     const paginatedCommands = commands.slice(start, end);
     
-    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒: \n𝖳𝖮𝖳𝖠𝖫 𝖢𝖮𝖬𝖬𝖠𝖭𝖣𝖲: ${totalCommands} \n\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${Math.ceil(totalCommands / pageSize)}`;
+    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒: \n𝖳𝖮𝖳𝖠𝖫 𝖢𝖮𝖬𝖬𝖠𝖭𝖣𝖲: ${totalCommands} \n\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${Math.ceil(totalCommands / pageSize)}\n\n𝐃𝐄𝐕𝐄𝐋𝐎𝐏𝐄𝐑 : 𝖬𝖠𝖱𝖩𝖧𝖴𝖭 𝖡𝖠𝖸𝖫𝖮𝖭`;
     
     sendMessage(senderId, { text: helpMessage }, pageAccessToken);
   }
