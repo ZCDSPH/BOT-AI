@@ -15,7 +15,13 @@ module.exports = {
     });
 
     const totalCommands = commandFiles.length;
-    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒: \n𝖳𝖮𝖳𝖠𝖫 𝖢𝖮𝖬𝖬𝖠𝖭𝖣𝖲: ${totalCommands} \n\n${commands.join('\n\n')}`;
+    const pageSize = 5;
+    const page = parseInt(args[0]) || 1;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const paginatedCommands = commands.slice(start, end);
+    
+    const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒: \n𝖳𝖮𝖳𝖠𝖫 𝖢𝖮𝖬𝖬𝖠𝖭𝖣𝖲: ${totalCommands} \n\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${Math.ceil(totalCommands / pageSize)}`;
     
     sendMessage(senderId, { text: helpMessage }, pageAccessToken);
   }
