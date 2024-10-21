@@ -1,11 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const { sendMessage } = require('./sendMessage');
+const fs = require("fs");
+const path = require("path");
+const { sendMessage } = require("./sendMessage");
+const axios = require("axios");
 
 const commands = new Map();
-const prefix = '-';
+const prefix = "-";
 
-const commandFiles = fs.readdirSync(path.join(__dirname, '../commands')).filter(file => file.endsWith('.js'));
+const commandFiles = fs
+  .readdirSync(path.join(__dirname, "../commands"))
+  .filter((file) => file.endsWith(".js"));
 for (const file of commandFiles) {
   const command = require(`../commands/${file}`);
   commands.set(command.name.toLowerCase(), command);
@@ -13,7 +16,7 @@ for (const file of commandFiles) {
 
 async function handleMessage(event, pageAccessToken) {
   if (!event || !event.sender || !event.sender.id) {
-    console.error('Invalid event object');
+    console.error("Invalid event object");
     return;
   }
 
@@ -24,11 +27,11 @@ async function handleMessage(event, pageAccessToken) {
 
     let commandName, args;
     if (messageText.startsWith(prefix)) {
-      const argsArray = messageText.slice(prefix.length).split(' ');
+      const argsArray = messageText.slice(prefix.length).split(" ");
       commandName = argsArray.shift().toLowerCase();
       args = argsArray;
     } else {
-      const words = messageText.split(' ');
+      const words = messageText.split(" ");
       commandName = words.shift().toLowerCase();
       args = words;
     }
@@ -42,15 +45,26 @@ async function handleMessage(event, pageAccessToken) {
         if (error.message) {
           sendMessage(senderId, { text: error.message }, pageAccessToken);
         } else {
-          sendMessage(senderId, { text: 'There was an error executing that command.' }, pageAccessToken);
+          sendMessage(
+            senderId,
+            { text: "There was an error executing that command." },
+            pageAccessToken,
+          );
         }
       }
       return;
+    } else {
+      const id = senderId;
+      const userMessage = args;
+      const { data } = await axios.get(
+        "https://joshweb.click/gpt4?prompt=" + userMessage + "&uid=" + id,
+      );
+      return sendMessage(id, { text: data.gpt4 }, pageAccessToken);
     }
   } else if (event.message) {
-    console.log('Received message without text');
+    console.log("Received message without text");
   } else {
-    console.log('Received event without message');
+    console.log("Received event without message");
   }
 }
 
