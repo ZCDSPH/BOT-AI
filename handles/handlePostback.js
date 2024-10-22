@@ -24,6 +24,7 @@ async function handlePostback(event, pageAccessToken) {
   } else if (payload.startsWith('COMMAND_')) {
     const commandName = payload.replace('COMMAND_', '').toLowerCase();
     const commandFilePath = path.join(commandsDir, `${commandName}.js`);
+    
     if (fs.existsSync(commandFilePath)) {
       const commandModule = require(commandFilePath);
       const commandInfo = `Command: ${commandModule.name}\nDescription: ${commandModule.description}\nCredit: ${commandModule.author}`;
