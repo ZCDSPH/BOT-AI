@@ -30,7 +30,6 @@ module.exports = {
     const helpMessage = `𝐓𝐎𝐒𝐇𝐈𝐀 𝐂𝐎𝐌𝐌𝐀𝐍𝐃𝐒\n━━━━━━━━━━━━━━━━━\n${paginatedCommands.join('\n\n')}\n\nPage ${page} of ${totalPages}\n━━━━━━━━━━━━━━━━━\n𝙳𝙴𝚅𝙴𝙻𝙾𝙿𝙴𝚁 : 𝙼𝙰𝚁𝙹𝙷𝚄𝙽 𝙱𝙰𝚈𝙻𝙾𝙽`;
 
     const quickReplies = [];
-
     if (page > 1) {
       quickReplies.push({
         content_type: 'text',
@@ -38,7 +37,6 @@ module.exports = {
         payload: `HELP_${page - 1}`
       });
     }
-
     if (page < totalPages) {
       quickReplies.push({
         content_type: 'text',
