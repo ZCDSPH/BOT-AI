@@ -17,14 +17,13 @@ async function handlePostback(event, pageAccessToken) {
   const senderId = event.sender.id;
   const payload = event.postback.payload;
 
-  if (payload.startsWith('HELP_')) {
-    const page = payload.replace('HELP_', '');
-    const helpCommand = require('./commands/help');
-    helpCommand.execute(senderId, [page], pageAccessToken, sendMessage);
+  if (payload.startsWith('CATEGORY_')) {
+    const category = payload;
+    await sendCommandButtons(senderId, category, pageAccessToken, sendMessage);
   } else if (payload.startsWith('COMMAND_')) {
     const commandName = payload.replace('COMMAND_', '').toLowerCase();
     const commandFilePath = path.join(commandsDir, `${commandName}.js`);
-    
+
     if (fs.existsSync(commandFilePath)) {
       const commandModule = require(commandFilePath);
       const commandInfo = `Command: ${commandModule.name}\nDescription: ${commandModule.description}\nCredit: ${commandModule.author}`;
