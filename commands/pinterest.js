@@ -5,7 +5,7 @@ const fs = require('fs');
 const token = fs.readFileSync('token.txt', 'utf8').trim();
 
 module.exports = {
-  name: 'pinterest',
+  name: 'pinte',
   description: 'Fetch images from Pinterest',
   author: 'coffee',
   usage: 'pinterest <search term> <number of images (1-10)>',
