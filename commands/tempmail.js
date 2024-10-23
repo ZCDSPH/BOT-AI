@@ -18,7 +18,6 @@ module.exports = {
       if (command === 'create') {
         let email;
         try {
-          // Generate a random temporary email
           const response = await axios.get(EMAIL_API_URL);
           email = response.data.email;
 
@@ -38,7 +37,6 @@ module.exports = {
 
         let inboxMessages;
         try {
-          // Retrieve messages from the specified email
           const inboxResponse = await axios.get(`${INBOX_API_URL}${email}`);
           inboxMessages = inboxResponse.data;
 
@@ -54,7 +52,6 @@ module.exports = {
           return sendMessage(senderId, { text: "❌ | No messages found in the inbox." }, pageAccessToken);
         }
 
-        // Get the most recent message
         const latestMessage = inboxMessages[0];
         const { date, from, subject } = latestMessage;
 
@@ -68,3 +65,4 @@ module.exports = {
       return sendMessage(senderId, { text: `❌ | An unexpected error occurred: ${error.message}` }, pageAccessToken);
     }
   }
+};
