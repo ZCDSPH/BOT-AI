@@ -3,26 +3,29 @@ const axios = require('axios');
 module.exports = {
   name: 'spotify',
   description: 'Get a Spotify link for a song',
-  author: '𝐌𝐀𝐑𝐉𝐇𝐔𝐍 𝐁𝐀𝐘𝐋𝐎𝐍',
+  author: 'Deku (rest api)',
   async execute(senderId, args, pageAccessToken, sendMessage) {
     const query = args.join(' ');
+    const apiUrl = `https://hiroshi-api.onrender.com/tiktok/spotify?search=${encodeURIComponent(query)}`;
 
     try {
-      const apiUrl = `https://deku-rest-apis.ooguy.com/spotify?q=${encodeURIComponent(query)}`;
-      const response = await axios.get(apiUrl);
+      const { data } = await axios.get(apiUrl);
+      const spotifyDownloadLink = data[0]?.download;
 
-      const spotifyLink = response.data.result;
-
-      if (spotifyLink) {
-      
+      if (spotifyDownloadLink) {
         sendMessage(senderId, {
           attachment: {
-            type: 'audio',
-            payload: {
-              url: spotifyLink,
-              is_reusable: true
-            }
+            type: 'file',
+            payload: { url: spotifyDownloadLink, is_reusable: true }
           }
+        }, pageAccessToken);
+
+        sendMessage(senderId, {
+          text: 'What would you like to do next?',
+          quick_replies: [
+            { content_type: 'text', title: 'Search another song', payload: 'SEARCH_ANOTHER_SONG' },
+            { content_type: 'text', title: 'Help', payload: 'HELP' }
+          ]
         }, pageAccessToken);
       } else {
         sendMessage(senderId, { text: 'Sorry, no Spotify link found for that query.' }, pageAccessToken);
