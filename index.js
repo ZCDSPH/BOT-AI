@@ -1,5 +1,4 @@
 const express = require('express');
-const moment = require('moment-timezone');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const { handleMessage } = require('./handles/handleMessage');
