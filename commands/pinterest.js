@@ -5,7 +5,7 @@ const fs = require('fs');
 const token = fs.readFileSync('token.txt', 'utf8').trim();
 
 module.exports = {
-  name: 'pinte',
+  name: 'pinterest',
   description: 'Fetch images from Pinterest',
   author: 'coffee',
   usage: 'pinterest <search term> <number of images (1-10)>',
@@ -14,7 +14,7 @@ module.exports = {
     const pageAccessToken = token;
 
     if (!args || args.length < 1) {
-      return await sendMessage(senderId, { text: '📷 | Please use this format:\npinterest cat 1-10' }, pageAccessToken);
+      return await sendMessage(senderId, { text: '📷 | Please use this format:\npinterest <search term> <number of images (1-10)>' }, pageAccessToken);
     }
 
     const searchTerm = args[0];
