@@ -47,9 +47,10 @@ async function handleMessage(event, pageAccessToken) {
       }
     } else {
       try {
-        const userMessage = args.join(" ") || commandName;
+
+        const userMessage = args.join(" ") || commandName;  
         const { data } = await axios.get(
-          `https://zcdsphapidashboard.onrender.com/api/tosh?question=${encodeURIComponent(userMessage)}`
+          `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
         );
         await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
       } catch (error) {
