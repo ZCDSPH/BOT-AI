@@ -3,6 +3,9 @@ const { sendMessage } = require('../handles/sendMessage');
 const fs = require('fs');
 const token = fs.readFileSync('token.txt', 'utf8').trim();
 
+const sendError = (senderId, message, pageAccessToken) => 
+  sendMessage(senderId, { text: message }, pageAccessToken);
+
 module.exports = {
   name: 'remini',
   description: 'Enhance an image using Remini.',
@@ -29,6 +32,3 @@ module.exports = {
     }
   },
 };
-
-const sendError = (senderId, message, pageAccessToken) => 
-  sendMessage(senderId, { text: message }, pageAccessToken);
