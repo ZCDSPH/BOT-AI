@@ -1,72 +1,68 @@
-const fs = require('fs');
-const path = require('path');
-const axios = require('axios');
-const { sendMessage } = require('./sendMessage');
-const { handlePostback } = require('./handlePostback');
+const fs = require("fs");
+const path = require("path");
+const { sendMessage } = require("./sendMessage");
+const axios = require("axios");
 
-// Load command modules
-const commands = Object.fromEntries(
-  fs.readdirSync(path.join(__dirname, '../commands'))
-    .filter(file => file.endsWith('.js'))
-    .map(file => [require(`../commands/${file}`).name.toLowerCase(), require(`../commands/${file}`)])
-);
+const commands = new Map();
+const prefix = "";
 
-const handleMessage = async (event, pageAccessToken) => {
-  const senderId = event?.sender?.id;
-  if (!senderId) {
-    console.error('Invalid event object');
+const commandFiles = fs
+  .readdirSync(path.join(__dirname, "../commands"))
+  .filter((file) => file.endsWith(".js"));
+for (const file of commandFiles) {
+  const command = require(`../commands/${file}`);
+  commands.set(command.name.toLowerCase(), command);
+}
+
+async function handleMessage(event, pageAccessToken) {
+  if (!event || !event.sender || !event.sender.id) {
+    console.error("Invalid event object");
     return;
   }
 
-  const messageText = event?.message?.text?.trim();
-  if (!messageText) {
-    console.error('No message text found');
-    return;
-  }
+  const senderId = event.sender.id;
 
-  const [commandName, ...args] = messageText.startsWith('-') 
-    ? messageText.slice(1).split(' ') 
-    : messageText.split(' ');
+  if (event.message && event.message.text) {
+    const messageText = event.message.text.trim();
 
-  const cmd = commands[commandName.toLowerCase()];
-
-  try {
-    if (cmd) {
-      await cmd.execute(senderId, args, pageAccessToken, event, getImageUrl);
+    let commandName, args;
+    if (messageText.startsWith(prefix)) {
+      const argsArray = messageText.slice(prefix.length).split(" ");
+      commandName = argsArray.shift().toLowerCase();
+      args = argsArray;
     } else {
-      const userMessage = args.join(" ") || commandName;  
-      const { data } = await axios.get(`https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`);
-      await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
+      const words = messageText.split(" ");
+      commandName = words.shift().toLowerCase();
+      args = words;
     }
-  } catch (error) {
-    console.error('Error executing command:', error);
-    await sendMessage(senderId, { text: 'There was an error executing that command.' }, pageAccessToken);
-  }
 
-  if (event?.postback) {
-    try {
-      await handlePostback(event, pageAccessToken);
-    } catch (error) {
-      console.error('Error handling postback:', error);
+    if (commands.has(commandName)) {
+      const command = commands.get(commandName);
+      try {
+        await command.execute(senderId, args, pageAccessToken, sendMessage);
+      } catch (error) {
+        console.error(`Error executing command ${commandName}:`, error);
+        const errorMsg = error.message ? error.message : "There was an error executing that command.";
+        sendMessage(senderId, { text: errorMsg }, pageAccessToken);
+      }
+    } else {
+      try {
+
+        const userMessage = args.join(" ") || commandName;  
+        const { data } = await axios.get(
+          `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
+        );
+        await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
+      } catch (error) {
+        console.error("Error fetching GPT response:", error);
+        sendMessage(senderId, { text: "I'm having trouble answering that right now." }, pageAccessToken);
+      }
     }
+  } else if (event.message) {
+    console.log("Received message without text");
+  } else {
+    console.log("Received event without message");
   }
-};
+}
 
-const getImageUrl = async (event, pageAccessToken) => {
-  const mid = event?.message?.reply_to?.mid;
-  if (!mid) return null;
-
-  try {
-    const attachments = await getAttachments(mid, pageAccessToken);
-    return attachments[0]?.image_data?.url || null;
-  } catch (error) {
-    console.error('Error retrieving image from reply:', error);
-  }
-};
-
-const getAttachments = async (mid, pageAccessToken) => {
-  const { data } = await axios.get(`https://graph.facebook.com/v21.0/${mid}/attachments?access_token=${pageAccessToken}`);
-  return data.data || [];
-};
-
-module.exports = { handleMessage, getImageUrl };
+module.exports = { handleMessage };
