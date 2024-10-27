@@ -56,7 +56,7 @@ async function handleMessage(event, pageAccessToken) {
     if (commands.has(commandName)) {
       const command = commands.get(commandName);
       try {
-        await command.execute(senderId, args, pageAccessToken, sendMessage, imageUrl);
+        await command.execute(senderId, args, pageAccessToken, event, getImageUrl);
       } catch (error) {
         console.error(`Error executing command ${commandName}:`, error);
         const errorMsg = error.message ? error.message : "There was an error executing that command.";
