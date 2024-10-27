@@ -1,10 +1,7 @@
 const axios = require('axios');
 const { sendMessage } = require('../handles/sendMessage');
 const fs = require('fs');
-const token = fs.readFileSync('token.txt', 'utf8').trim();
-
-const sendError = (senderId, message, pageAccessToken) => 
-  sendMessage(senderId, { text: message }, pageAccessToken);
+const token = fs.readFileSync('token.txt', 'utf8').trim(); 
 
 module.exports = {
   name: 'remini',
@@ -17,7 +14,7 @@ module.exports = {
     if (!imageUrl) return sendError(senderId, 'Error: No image found to upscale.', pageAccessToken);
 
     try {
-      const { data } = await axios.get(`https://api.kenliejugarap.com/reminibymarjhun/?url=${encodeURIComponent(imageUrl)}`, {
+      const { data } = await axios.get(`https://hiroshi-api.onrender.com/image/upscale?url=${encodeURIComponent(imageUrl)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -32,3 +29,6 @@ module.exports = {
     }
   },
 };
+
+const sendError = (senderId, message, pageAccessToken) => 
+  sendMessage(senderId, { text: message }, pageAccessToken);
