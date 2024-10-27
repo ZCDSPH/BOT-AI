@@ -17,7 +17,7 @@ module.exports = {
     if (!imageUrl) return sendError(senderId, 'Error: No image found to upscale.', pageAccessToken);
 
     try {
-      const { data } = await axios.get(`https://hiroshi-api.onrender.com/image/upscale?url=${encodeURIComponent(imageUrl)}`, {
+      const { data } = await axios.get(`https://api.kenliejugarap.com/reminibymarjhun/?url=${encodeURIComponent(imageUrl)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
