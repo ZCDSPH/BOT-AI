@@ -14,6 +14,18 @@ for (const file of commandFiles) {
   commands.set(command.name.toLowerCase(), command);
 }
 
+const getImageUrl = async (event, pageAccessToken) => {
+  const mid = event?.message?.reply_to?.mid;
+  if (!mid) return null;
+  try {
+    const { data } = await axios.get(`https://graph.facebook.com/v21.0/${mid}/attachments?access_token=${pageAccessToken}`);
+    return data?.data?.[0]?.image_data?.url || null;
+  } catch (error) {
+    console.error('Error retrieving image URL:', error);
+    return null;
+  }
+};
+
 async function handleMessage(event, pageAccessToken) {
   if (!event || !event.sender || !event.sender.id) {
     console.error("Invalid event object");
@@ -24,8 +36,8 @@ async function handleMessage(event, pageAccessToken) {
 
   if (event.message && event.message.text) {
     const messageText = event.message.text.trim();
-
     let commandName, args;
+
     if (messageText.startsWith(prefix)) {
       const argsArray = messageText.slice(prefix.length).split(" ");
       commandName = argsArray.shift().toLowerCase();
@@ -36,10 +48,15 @@ async function handleMessage(event, pageAccessToken) {
       args = words;
     }
 
+    const imageUrl = await getImageUrl(event, pageAccessToken);
+    if (imageUrl) {
+      console.log('Retrieved image URL:', imageUrl);
+    }
+
     if (commands.has(commandName)) {
       const command = commands.get(commandName);
       try {
-        await command.execute(senderId, args, pageAccessToken, sendMessage);
+        await command.execute(senderId, args, pageAccessToken, sendMessage, imageUrl);
       } catch (error) {
         console.error(`Error executing command ${commandName}:`, error);
         const errorMsg = error.message ? error.message : "There was an error executing that command.";
@@ -47,11 +64,8 @@ async function handleMessage(event, pageAccessToken) {
       }
     } else {
       try {
-
         const userMessage = args.join(" ") || commandName;  
-        const { data } = await axios.get(
-          `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
-        );
+        const { data } = await axios.get(`https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`);
         await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
       } catch (error) {
         console.error("Error fetching GPT response:", error);
@@ -65,4 +79,4 @@ async function handleMessage(event, pageAccessToken) {
   }
 }
 
-module.exports = { handleMessage };
+module.exports = { handleMessage, getImageUrl };
