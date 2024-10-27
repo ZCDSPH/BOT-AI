@@ -49,18 +49,19 @@ async function handleMessage(event, pageAccessToken) {
     }
 
     const imageUrl = await getImageUrl(event, pageAccessToken);
-    if (imageUrl) {
-      console.log('Retrieved image URL:', imageUrl);
-    }
+    console.log('Retrieved image URL:', imageUrl);
 
     if (commands.has(commandName)) {
       const command = commands.get(commandName);
+      if (typeof command.execute !== "function") {
+        console.error(`Command ${commandName} does not have an execute function.`);
+        return;
+      }
       try {
         await command.execute(senderId, args, pageAccessToken, event, getImageUrl);
       } catch (error) {
         console.error(`Error executing command ${commandName}:`, error);
-        const errorMsg = error.message ? error.message : "There was an error executing that command.";
-        sendMessage(senderId, { text: errorMsg }, pageAccessToken);
+        sendMessage(senderId, { text: "Error executing command." }, pageAccessToken);
       }
     } else {
       try {
@@ -72,10 +73,8 @@ async function handleMessage(event, pageAccessToken) {
         sendMessage(senderId, { text: "I'm having trouble answering that right now." }, pageAccessToken);
       }
     }
-  } else if (event.message) {
-    console.log("Received message without text");
   } else {
-    console.log("Received event without message");
+    console.log("Received message without text or invalid event structure");
   }
 }
 
