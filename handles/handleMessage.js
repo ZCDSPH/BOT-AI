@@ -50,7 +50,7 @@ async function handleMessage(event, pageAccessToken) {
 
         const userMessage = args.join(" ") || commandName;  
         const { data } = await axios.get(
-          `https://joshweb.click/api/blackboxai?q=${encodeURIComponent(userMessage)}&uid=${senderId}`
+          `https://joshweb.click/gpt4?prompt=${encodeURIComponent(userMessage)}&uid=${senderId}`
         );
         await sendMessage(senderId, { text: data.gpt4 }, pageAccessToken);
       } catch (error) {
